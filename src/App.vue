@@ -3,14 +3,12 @@ import { ref, computed, watch } from 'vue'
 import AppContainer from './components/AppContainer.vue'
 import AppCard from './components/AppCard.vue'
 // import EasingVisualizer from './components/EasingVisualizer.vue'
-// import EasingEditor from './components/EasingEditor.vue'
+import EasingEditor from './components/EasingEditor.vue'
 // import EasingPresetOptions from './components/EasingPresetOptions.vue'
-
-type BezierCurveValue = [number, number, number, number]
 
 type EasingPreset = {
   img: string
-  value: BezierCurveValue
+  value: number[]
 }
 
 type EasingPresetsType = {
@@ -26,20 +24,20 @@ const easingPresets: EasingPresetsType = {
 }
 
 export default {
-  components: { AppContainer, AppCard }, // EasingVisualizer, EasingEditor, EasingPresetOptions
+  components: { AppContainer, AppCard, EasingEditor }, // EasingVisualizer, , EasingPresetOptions
   setup() {
     const defaultPreset = easingPresets['ease-in-out']
-    const defaultPresetValue: BezierCurveValue = defaultPreset.value as BezierCurveValue
+    const defaultPresetValue = defaultPreset.value
     const currentPreset = ref(defaultPreset)
-    const currentValue = ref<BezierCurveValue>(defaultPresetValue)
+    const currentValue = ref(defaultPresetValue)
 
     const roundedCurrentValues = computed(() => currentValue.value.map((val) => val.toFixed(1)))
 
     watch(currentPreset, (newPreset) => {
-      currentValue.value = newPreset.value as BezierCurveValue
+      currentValue.value = newPreset.value
     })
 
-    const setCurrentValue = (value: BezierCurveValue) => {
+    const setCurrentValue = (value: number[]) => {
       currentValue.value = value
     }
 
@@ -54,17 +52,17 @@ export default {
 
 <template>
   <AppContainer>
-    <AppCard :cardWidth="300">
-      <!-- <EasingVisualizer :value="currentValue" @updateValue="setCurrentValue" />
+    <AppCard :cardWidth="450">
+      <!-- <EasingVisualizer :value="currentValue" /> -->
       <div class="flex justify-evenly">
-        <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" />
+        <!-- <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" /> -->
         <EasingEditor
           :value="currentValue"
           @updateValue="setCurrentValue"
           :height="300"
           :width="300"
         />
-      </div> -->
+      </div>
       <div class="mx-auto pt-4 font-light text-sm">
         <p>cubic-bezier ({{ roundedCurrentValues.join(', ') }})</p>
       </div>
