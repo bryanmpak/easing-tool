@@ -46,9 +46,6 @@ export default defineComponent({
     let intervalId: number | undefined
 
     watchEffect(() => {
-      if (intervalId !== undefined) {
-        clearInterval(intervalId)
-      }
       if (isPlaying.value) {
         intervalId = window.setInterval(() => {
           if (activeStepIndex.value < steps.value.length - 1) {

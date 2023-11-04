@@ -4,27 +4,16 @@ import AppContainer from './components/AppContainer.vue'
 import AppCard from './components/AppCard.vue'
 import EasingVisualizer from './components/EasingVisualizer.vue'
 import EasingEditor from './components/EasingEditor.vue'
-// import EasingPresetOptions from './components/EasingPresetOptions.vue'
+import EasingPresetOptions from './components/EasingPresetOptions.vue'
+import { easingPresets } from './utils/easing-presets'
 
-type EasingPreset = {
+export type EasingPreset = {
   img: string
   value: number[]
 }
 
-type EasingPresetsType = {
-  [key: string]: EasingPreset
-}
-
-const easingPresets: EasingPresetsType = {
-  'ease-in-out': { img: '/ease-in-out.png', value: [0.42, 0, 0.58, 1] },
-  'ease-in': { img: '/ease-in.png', value: [0.42, 0, 1, 1] },
-  'ease-out': { img: '/ease-out.png', value: [0, 0, 0.58, 1] },
-  ease: { img: '/ease.png', value: [0.25, 0.1, 0.25, 1] },
-  linear: { img: '/linear.png', value: [0, 0, 1, 1] }
-}
-
 export default {
-  components: { AppContainer, AppCard, EasingEditor, EasingVisualizer }, // EasingPresetOptions
+  components: { AppContainer, AppCard, EasingEditor, EasingVisualizer, EasingPresetOptions },
   setup() {
     const defaultPreset = easingPresets['ease-in-out']
     const defaultPresetValue = defaultPreset.value
@@ -43,14 +32,13 @@ export default {
 
     const setCurrentPreset = (preset: EasingPreset) => {
       currentPreset.value = preset
+      visualizerValue.value = preset.value
     }
 
     const visualizerValue = ref(defaultPresetValue)
-    console.log(visualizerValue.value)
 
     const handleComplete = (newValue: number[]) => {
       visualizerValue.value = newValue
-      console.log(visualizerValue.value)
     }
 
     return {
@@ -71,7 +59,7 @@ export default {
     <AppCard :cardWidth="450">
       <EasingVisualizer :value="visualizerValue" />
       <div class="flex justify-evenly">
-        <!-- <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" /> -->
+        <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" />
         <EasingEditor
           :value="currentValue"
           @updateValue="setCurrentValue"
