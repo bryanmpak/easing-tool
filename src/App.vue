@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import AppContainer from './components/AppContainer.vue'
 import AppCard from './components/AppCard.vue'
-// import EasingVisualizer from './components/EasingVisualizer.vue'
+import EasingVisualizer from './components/EasingVisualizer.vue'
 import EasingEditor from './components/EasingEditor.vue'
 // import EasingPresetOptions from './components/EasingPresetOptions.vue'
 
@@ -24,7 +24,7 @@ const easingPresets: EasingPresetsType = {
 }
 
 export default {
-  components: { AppContainer, AppCard, EasingEditor }, // EasingVisualizer, , EasingPresetOptions
+  components: { AppContainer, AppCard, EasingEditor, EasingVisualizer }, // EasingPresetOptions
   setup() {
     const defaultPreset = easingPresets['ease-in-out']
     const defaultPresetValue = defaultPreset.value
@@ -53,7 +53,7 @@ export default {
 <template>
   <AppContainer>
     <AppCard :cardWidth="450">
-      <!-- <EasingVisualizer :value="currentValue" /> -->
+      <EasingVisualizer :value="currentValue" />
       <div class="flex justify-evenly">
         <!-- <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" /> -->
         <EasingEditor
