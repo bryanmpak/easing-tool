@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted, watch, onUnmounted } from 'vue'
+import { defineComponent, ref, computed, onMounted, watch, onUnmounted, watchEffect } from 'vue'
 import { bezier } from '@/utils/bezier-easing'
 import { FPS, OPACITY, TIME_ELAPSED } from '@/utils/constants'
 
@@ -40,32 +40,32 @@ export default defineComponent({
       () => props.value,
       () => {
         activeStepIndex.value = 0
-
-        isPlaying.value = true
       }
     )
 
     let intervalId: number | undefined
 
-    watch(
-      () => isPlaying.value,
-      (newIsPlaying) => {
-        if (newIsPlaying) {
-          intervalId = window.setInterval(() => {
-            if (activeStepIndex.value < steps.value.length - 1) {
-              activeStepIndex.value += 1
-            } else {
-              isPlaying.value = false
-            }
-          }, animationTiming / fps)
-        }
+    watchEffect(() => {
+      if (intervalId !== undefined) {
+        clearInterval(intervalId)
       }
-    )
+      if (isPlaying.value) {
+        intervalId = window.setInterval(() => {
+          if (activeStepIndex.value < steps.value.length - 1) {
+            activeStepIndex.value += 1
+          } else {
+            isPlaying.value = false
+          }
+        }, animationTiming / fps)
+      }
+    })
 
     onMounted(() => {
       if (containerRef.value) {
         containerWidth.value = (containerRef.value as HTMLElement).offsetWidth
       }
+      activeStepIndex.value = 0
+      isPlaying.value = true
     })
 
     onUnmounted(() => {

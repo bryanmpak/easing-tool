@@ -45,7 +45,23 @@ export default {
       currentPreset.value = preset
     }
 
-    return { currentValue, roundedCurrentValues, setCurrentValue, setCurrentPreset, currentPreset }
+    const visualizerValue = ref(defaultPresetValue)
+    console.log(visualizerValue.value)
+
+    const handleComplete = (newValue: number[]) => {
+      visualizerValue.value = newValue
+      console.log(visualizerValue.value)
+    }
+
+    return {
+      currentValue,
+      roundedCurrentValues,
+      visualizerValue,
+      setCurrentValue,
+      setCurrentPreset,
+      currentPreset,
+      handleComplete
+    }
   }
 }
 </script>
@@ -53,12 +69,13 @@ export default {
 <template>
   <AppContainer>
     <AppCard :cardWidth="450">
-      <EasingVisualizer :value="currentValue" />
+      <EasingVisualizer :value="visualizerValue" />
       <div class="flex justify-evenly">
         <!-- <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" /> -->
         <EasingEditor
           :value="currentValue"
           @updateValue="setCurrentValue"
+          @editing-finished="handleComplete"
           :height="300"
           :width="300"
         />

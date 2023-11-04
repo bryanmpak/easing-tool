@@ -65,6 +65,7 @@ export default defineComponent({
 
     const handleMouseUp = () => {
       isDragging.value = null
+      emit('editing-finished', props.value)
     }
 
     return {
