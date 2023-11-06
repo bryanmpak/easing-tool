@@ -62,7 +62,7 @@ export default defineComponent({
   <g>
     <line class="stroke-purple-500 stroke-2" :x1="cxs" :y1="cys" :x2="startX" :y2="startY" />
     <circle
-      class="focus:rounded-full hover:cursor-pointer fill-purple-500 focus:outline-purple-600"
+      class="focus:rounded-full hover:cursor-pointer fill-purple-500 focus:outline-purple-700"
       :cx="controlX"
       :cy="controlY"
       :r="radius"

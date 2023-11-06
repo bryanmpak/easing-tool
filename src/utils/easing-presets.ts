@@ -3,15 +3,7 @@ import easeInImg from '@/assets/ease-in.png'
 import easeOutImg from '@/assets/ease-out.png'
 import easeImg from '@/assets/ease.png'
 import linearImg from '@/assets/linear.png'
-
-export type EasingPreset = {
-  img: string
-  value: number[]
-}
-
-export type EasingPresetsType = {
-  [key: string]: EasingPreset
-}
+import type { EasingPresetsType } from './typings'
 
 export const easingPresets: EasingPresetsType = {
   'ease-in-out': { img: easeInOutImg, value: [0.42, 0, 0.58, 1] },

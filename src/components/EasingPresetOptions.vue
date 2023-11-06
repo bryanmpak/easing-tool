@@ -1,13 +1,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import type { EasingPreset } from '@/App.vue'
 import type { PropType } from 'vue'
 import { easingPresets } from '@/utils/easing-presets'
+import type { EasingPreset } from '@/utils/typings'
 
 export default defineComponent({
   name: 'EasingPresetOptions',
   props: {
     currentPreset: {
+      // TTD: check if this is the right TS for Vue
       type: Object as PropType<EasingPreset>,
       required: true
     }

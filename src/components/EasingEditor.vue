@@ -1,15 +1,17 @@
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import BezierCurve from './BezierCurve.vue'
 import CurveHandle from './CurveHandle.vue'
 import { PADDING } from '@/utils/constants'
 import type { PropType } from 'vue'
+import type { BezierCurveValues } from '@/utils/typings'
 
 export default defineComponent({
   name: 'EasingEditor',
   components: { BezierCurve, CurveHandle },
   props: {
     value: {
+      // TTD: check if this the right way to do TS in Vue
       type: Array as PropType<number[]>,
       required: true
     },
@@ -25,6 +27,13 @@ export default defineComponent({
   setup(props, { emit }) {
     const editorRef = ref<SVGSVGElement | null>(null)
     const isDragging = ref<null | number>(null)
+    const rect = ref<DOMRect | null>(null)
+
+    onMounted(() => {
+      if (editorRef.value) {
+        rect.value = editorRef.value.getBoundingClientRect()
+      }
+    })
 
     const padding = PADDING
     const paddedWidth = computed(() => props.width - padding * 2)
@@ -39,23 +48,20 @@ export default defineComponent({
     }))
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (isDragging.value !== null && editorRef.value) {
-        const rect = editorRef.value.getBoundingClientRect()
-        if (rect) {
-          const newValue = [...props.value]
+      if (isDragging.value !== null && rect.value) {
+        const newValue = [...props.value]
 
-          let x = (e.clientX - rect.left - padding) / paddedWidth.value
-          let y = 1 - (e.clientY - rect.top - padding) / paddedHeight.value
+        let x = (e.clientX - rect.value.left - padding) / paddedWidth.value
+        let y = 1 - (e.clientY - rect.value.top - padding) / paddedHeight.value
 
-          // clamping x value to range [0, 1], per bezier-easing.ts spec
-          x = Math.min(Math.max(x, 0), 1)
+        // clamping x value to range [0, 1], per bezier-easing.ts spec
+        x = Math.min(Math.max(x, 0), 1)
 
-          // based on index, which coordinate is being adjusted
-          newValue[isDragging.value * 2] = x
-          newValue[isDragging.value * 2 + 1] = y
+        // based on index, which coordinate is being adjusted
+        newValue[isDragging.value * 2] = x
+        newValue[isDragging.value * 2 + 1] = y
 
-          emit('updateValue', newValue)
-        }
+        emit('updateValue', newValue)
       }
     }
 

@@ -2,6 +2,7 @@
 import { defineComponent, ref, computed, onMounted, watch, onUnmounted, watchEffect } from 'vue'
 import { bezier } from '@/utils/bezier-easing'
 import { FPS, OPACITY, TIME_ELAPSED } from '@/utils/constants'
+import type { BezierCurveTuple } from '@/utils/typings'
 
 export default defineComponent({
   name: 'EasingVisualizer',
@@ -12,17 +13,15 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const isPlaying = ref(false)
-    const fps = FPS
+    const clampedFps = Math.min(FPS, 60)
     const elapsedOpacity = OPACITY
     const animationTiming = TIME_ELAPSED
+
+    const isPlaying = ref(false)
     const containerRef = ref(null)
     const containerWidth = ref(0)
 
-    const easingFunction = computed(() =>
-      // TTD: create a types.ts & add a BezierCurve type
-      bezier(...(props.value as [number, number, number, number]))
-    )
+    const easingFunction = computed(() => bezier(...(props.value as BezierCurveTuple)))
 
     const getSteps = (easingFn: (x: number) => number, fps: number) => {
       const steps = Array.from({ length: fps })
@@ -32,7 +31,7 @@ export default defineComponent({
       return steps
     }
 
-    const steps = computed(() => getSteps(easingFunction.value, fps))
+    const steps = computed(() => getSteps(easingFunction.value, clampedFps))
 
     const activeStepIndex = ref(steps.value.length - 1)
 
@@ -53,7 +52,7 @@ export default defineComponent({
           } else {
             isPlaying.value = false
           }
-        }, animationTiming / fps)
+        }, animationTiming / clampedFps)
       }
     })
 
@@ -90,7 +89,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div ref="containerRef" class="relative h-10 mr-8">
+  <div ref="containerRef" class="relative h-12 mr-8">
     <div
       v-for="(step, index) in steps"
       :key="step"

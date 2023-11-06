@@ -6,11 +6,8 @@ import EasingVisualizer from './components/EasingVisualizer.vue'
 import EasingEditor from './components/EasingEditor.vue'
 import EasingPresetOptions from './components/EasingPresetOptions.vue'
 import { easingPresets } from './utils/easing-presets'
-
-export type EasingPreset = {
-  img: string
-  value: number[]
-}
+import type { EasingPreset } from './utils/typings'
+import type { BezierCurveValues } from './utils/typings'
 
 export default {
   components: { AppContainer, AppCard, EasingEditor, EasingVisualizer, EasingPresetOptions },
@@ -26,7 +23,7 @@ export default {
       currentValue.value = newPreset.value
     })
 
-    const setCurrentValue = (value: number[]) => {
+    const setCurrentValue = (value: BezierCurveValues) => {
       currentValue.value = value
     }
 
@@ -37,7 +34,7 @@ export default {
 
     const visualizerValue = ref(defaultPresetValue)
 
-    const handleComplete = (newValue: number[]) => {
+    const handleComplete = (newValue: BezierCurveValues) => {
       visualizerValue.value = newValue
     }
 
