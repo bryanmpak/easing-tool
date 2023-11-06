@@ -4,7 +4,6 @@ import BezierCurve from './BezierCurve.vue'
 import CurveHandle from './CurveHandle.vue'
 import { PADDING } from '@/utils/constants'
 import type { PropType } from 'vue'
-import type { BezierCurveValues } from '@/utils/typings'
 
 export default defineComponent({
   name: 'EasingEditor',

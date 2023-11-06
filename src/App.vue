@@ -17,7 +17,7 @@ export default {
     const currentPreset = ref(defaultPreset)
     const currentValue = ref(defaultPresetValue)
 
-    const roundedCurrentValues = computed(() => currentValue.value.map((val) => val.toFixed(1)))
+    const roundedCurrentValues = computed(() => currentValue.value.map((val) => val.toFixed(2)))
 
     watch(currentPreset, (newPreset) => {
       currentValue.value = newPreset.value

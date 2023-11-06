@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch, onUnmounted, watchEffect } from 'vue'
 import { bezier } from '@/utils/bezier-easing'
-import { FPS, OPACITY, TIME_ELAPSED } from '@/utils/constants'
+import { ANIMATION_FRAMES, OPACITY, ANIMATION_DURATION } from '@/utils/constants'
 import type { BezierCurveTuple } from '@/utils/typings'
 
 export default defineComponent({
@@ -13,13 +13,15 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const clampedFps = Math.min(FPS, 60)
+    const frames = ANIMATION_FRAMES
     const elapsedOpacity = OPACITY
-    const animationTiming = TIME_ELAPSED
+    const animationDuration = ANIMATION_DURATION
 
     const isPlaying = ref(false)
     const containerRef = ref(null)
     const containerWidth = ref(0)
+    const activeStepIndex = ref(0)
+    let animationFrameId: number | undefined
 
     const easingFunction = computed(() => bezier(...(props.value as BezierCurveTuple)))
 
@@ -31,42 +33,50 @@ export default defineComponent({
       return steps
     }
 
-    const steps = computed(() => getSteps(easingFunction.value, clampedFps))
+    const steps = computed(() => getSteps(easingFunction.value, frames))
 
-    const activeStepIndex = ref(steps.value.length - 1)
+    const startAnimation = () => {
+      let startTime: number | undefined
+
+      const runAnimation = (timestamp: number) => {
+        if (startTime === undefined) startTime = timestamp
+        const elapsedTime = timestamp - startTime
+        const progress = elapsedTime / animationDuration
+        const currentStep = Math.min(progress * (steps.value.length - 1), steps.value.length - 1)
+        activeStepIndex.value = Math.floor(currentStep)
+
+        if (progress < 1) {
+          animationFrameId = requestAnimationFrame(runAnimation)
+        } else {
+          isPlaying.value = false
+        }
+      }
+
+      isPlaying.value = true
+      animationFrameId = requestAnimationFrame(runAnimation)
+    }
 
     watch(
       () => props.value,
       () => {
+        if (animationFrameId !== undefined) {
+          cancelAnimationFrame(animationFrameId)
+        }
         activeStepIndex.value = 0
+        startAnimation()
       }
     )
-
-    let intervalId: number | undefined
-
-    watchEffect(() => {
-      if (isPlaying.value) {
-        intervalId = window.setInterval(() => {
-          if (activeStepIndex.value < steps.value.length - 1) {
-            activeStepIndex.value += 1
-          } else {
-            isPlaying.value = false
-          }
-        }, animationTiming / clampedFps)
-      }
-    })
 
     onMounted(() => {
       if (containerRef.value) {
         containerWidth.value = (containerRef.value as HTMLElement).offsetWidth
       }
-      activeStepIndex.value = 0
-      isPlaying.value = true
+      startAnimation()
     })
 
     onUnmounted(() => {
-      if (intervalId !== undefined) {
-        clearInterval(intervalId)
+      if (animationFrameId !== undefined) {
+        cancelAnimationFrame(animationFrameId)
       }
     })
 
