@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue'
 import BezierCurve from './BezierCurve.vue'
 import CurveHandle from './CurveHandle.vue'
 import { PADDING } from '@/utils/constants'
@@ -30,10 +30,19 @@ export default defineComponent({
     const isDragging = ref<null | number>(null)
     const rect = ref<DOMRect | null>(null)
 
-    onMounted(() => {
+    const updateRect = () => {
       if (editorRef.value) {
         rect.value = editorRef.value.getBoundingClientRect()
       }
+    }
+
+    onMounted(() => {
+      updateRect()
+      window.addEventListener('resize', updateRect)
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateRect)
     })
 
     const paddedWidth = computed(() => props.width - padding * 2)
