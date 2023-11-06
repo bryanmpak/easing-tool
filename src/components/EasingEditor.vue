@@ -24,6 +24,8 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const padding = PADDING
+
     const editorRef = ref<SVGSVGElement | null>(null)
     const isDragging = ref<null | number>(null)
     const rect = ref<DOMRect | null>(null)
@@ -34,17 +36,17 @@ export default defineComponent({
       }
     })
 
-    const padding = PADDING
     const paddedWidth = computed(() => props.width - padding * 2)
     const paddedHeight = computed(() => props.height - padding * 2)
 
-    const x = (val: number) => Math.round(val * paddedWidth.value) + padding
-    const y = (val: number) => Math.round((1 - val) * paddedHeight.value) + padding
-
-    const position = computed(() => ({
-      x: { from: x(0), to: x(1) },
-      y: { from: y(0), to: y(1) }
-    }))
+    const position = computed(() => {
+      const x = (val: number) => Math.round(val * paddedWidth.value) + padding
+      const y = (val: number) => Math.round((1 - val) * paddedHeight.value) + padding
+      return {
+        x: { from: x(0), to: x(1) },
+        y: { from: y(0), to: y(1) }
+      }
+    })
 
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging.value !== null && rect.value) {
@@ -88,7 +90,7 @@ export default defineComponent({
 <template>
   <div :style="{ width: width + 'px', height: height + 'px' }" class="relative">
     <div
-      class="absolute w-full h-full bg-[length:16px_16px] pointer-events-none"
+      class="absolute w-full h-full bg-[length:16px_16px] pointer-events-none -z-10"
       :style="{
         backgroundImage:
           'radial-gradient(circle at 6px 6px, rgb(26, 26, 26, 0.2) 1px, transparent 0)'

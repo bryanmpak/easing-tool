@@ -18,7 +18,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="flex flex-col mx-auto rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] p-8"
+    class="flex flex-col mx-auto rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.2)] p-8"
     :style="{ width: cardWidth + 'px' }"
   >
     <slot></slot>

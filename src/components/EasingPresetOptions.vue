@@ -33,8 +33,8 @@ export default defineComponent({
       v-for="(preset, presetKey) in easingPresets"
       :key="presetKey"
       :title="presetKey.toString()"
-      class="h-12 w-12 rounded-md border bg-gray-200 hover:bg-gray-300"
-      :class="{ 'bg-gray-300': currentPreset.value.toString() === preset.value.toString() }"
+      class="h-12 w-12 rounded-md border bg-gray-200 hover:bg-purple-200"
+      :class="{ 'bg-purple-200': currentPreset.value.toString() === preset.value.toString() }"
       @click="handleClick(preset)"
     >
       <img :src="preset.img" :alt="presetKey.toString()" />
