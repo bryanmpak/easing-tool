@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted, watch, onUnmounted, watchEffect } from 'vue'
 import { bezier } from '@/utils/bezier-easing'
-import { ANIMATION_FRAMES, OPACITY, ANIMATION_DURATION } from '@/utils/constants'
+import { ANIMATION_FRAMES, ANIMATION_DURATION } from '@/utils/constants'
 import type { BezierCurveTuple } from '@/utils/typings'
 
 export default defineComponent({
@@ -14,7 +14,6 @@ export default defineComponent({
   },
   setup(props) {
     const frames = ANIMATION_FRAMES
-    const elapsedOpacity = OPACITY
     const animationDuration = ANIMATION_DURATION
 
     const isPlaying = ref(false)
@@ -25,10 +24,10 @@ export default defineComponent({
 
     const easingFunction = computed(() => bezier(...(props.value as BezierCurveTuple)))
 
-    const getSteps = (easingFn: (x: number) => number, fps: number) => {
-      const steps = Array.from({ length: fps })
+    const getSteps = (easingFn: (x: number) => number, frame: number) => {
+      const steps = Array.from({ length: frame })
         .fill(-1)
-        .map((_, index) => easingFn(index / fps))
+        .map((_, index) => easingFn(index / frame))
       steps.push(easingFn(1))
       return steps
     }
@@ -36,6 +35,7 @@ export default defineComponent({
     const steps = computed(() => getSteps(easingFunction.value, frames))
 
     const startAnimation = () => {
+      // startTime & progress to allow for flexibility in animation runtime (via animationDuration)
       let startTime: number | undefined
 
       const runAnimation = (timestamp: number) => {
@@ -80,12 +80,9 @@ export default defineComponent({
       }
     })
 
+    // to have opacity for elapsed steps in animation
     const getOpacity = (index: number) => {
-      return index === activeStepIndex.value
-        ? 1
-        : index > activeStepIndex.value
-        ? 0
-        : elapsedOpacity
+      return index === activeStepIndex.value ? 1 : index > activeStepIndex.value ? 0 : 0.2
     }
 
     return {

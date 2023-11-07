@@ -36,7 +36,7 @@ export default defineComponent({
       }
     }
 
-    // window resizes for handleMouseMove
+    // window resizes to deal with position recalcs in handleMove
     onMounted(() => {
       updateRect()
       window.addEventListener('resize', updateRect)
@@ -60,6 +60,7 @@ export default defineComponent({
       }
     })
 
+    // mouse & touch handlers for EasingEditor & CurveHandles
     const handleMove = (clientX: number, clientY: number) => {
       if (isDragging.value !== null && rect.value) {
         let x = (clientX - rect.value.left - padding) / paddedWidth.value
