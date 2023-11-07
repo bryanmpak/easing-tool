@@ -51,7 +51,7 @@ export default defineComponent({
 
 <template>
   <g>
-    <path class="stroke-2 stroke-black fill-none" :d="curve" />
+    <path class="stroke-2 stroke-[var(--color-heading)] fill-none" :d="curve" />
     <path
       class="stroke-1 stroke-gray-500 fill-none"
       :d="`M${padding},${height - padding} C${padding},${height - padding} ${

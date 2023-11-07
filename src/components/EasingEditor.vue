@@ -10,7 +10,7 @@ export default defineComponent({
   components: { BezierCurve, CurveHandle },
   props: {
     value: {
-      // TTD: check if this the right way to do TS in Vue
+      // not sure if this the right way to do TS in Vue
       type: Array as PropType<number[]>,
       required: true
     },
@@ -36,6 +36,7 @@ export default defineComponent({
       }
     }
 
+    // window resizes for handleMouseMove
     onMounted(() => {
       updateRect()
       window.addEventListener('resize', updateRect)
@@ -45,9 +46,11 @@ export default defineComponent({
       window.removeEventListener('resize', updateRect)
     })
 
+    // to account for padding in SVG
     const paddedWidth = computed(() => props.width - padding * 2)
     const paddedHeight = computed(() => props.height - padding * 2)
 
+    // curve & handle positions
     const position = computed(() => {
       const x = (val: number) => Math.round(val * paddedWidth.value) + padding
       const y = (val: number) => Math.round((1 - val) * paddedHeight.value) + padding
@@ -57,6 +60,7 @@ export default defineComponent({
       }
     })
 
+    // curve & handle positions
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging.value !== null && rect.value) {
         const newValue = [...props.value]
@@ -102,7 +106,7 @@ export default defineComponent({
       class="absolute w-full h-full bg-[length:16px_16px] pointer-events-none -z-10"
       :style="{
         backgroundImage:
-          'radial-gradient(circle at 6px 6px, rgb(26, 26, 26, 0.2) 1px, transparent 0)'
+          'radial-gradient(circle at 6px 6px, var(--gradient-color) 1px, transparent 0)'
       }"
     ></div>
     <svg
