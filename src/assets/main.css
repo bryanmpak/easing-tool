@@ -71,6 +71,13 @@
   font-weight: normal;
 }
 
+body,
+html {
+  overflow: hidden;
+  height: 100%;
+  touch-action: none;
+}
+
 body {
   color: var(--color-text);
   background: var(--color-background);

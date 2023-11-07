@@ -53,7 +53,7 @@ export default {
 
 <template>
   <AppContainer>
-    <AppCard :cardWidth="400">
+    <AppCard>
       <EasingVisualizer :value="visualizerValue" />
       <div class="flex justify-evenly">
         <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" />
