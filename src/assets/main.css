@@ -62,10 +62,6 @@
     --shadow-color: rgba(0, 0, 0, 0.7);
   }
 }
-/* 
-.gradient-background {
-  background-image: radial-gradient(circle at 6px 6px, var(--gradient-color) 1px, transparent 0);
-} */
 
 *,
 *::before,

@@ -10,7 +10,7 @@ import type { EasingPreset } from './utils/typings'
 import type { BezierCurveValues } from './utils/typings'
 
 export default {
-  components: { AppContainer, AppCard, EasingEditor, EasingVisualizer, EasingPresetOptions },
+  components: { AppCard, EasingEditor, EasingVisualizer, EasingPresetOptions, AppContainer },
   setup() {
     const defaultPreset = easingPresets['ease-in-out']
     const defaultPresetValue = defaultPreset.value
@@ -53,7 +53,7 @@ export default {
 
 <template>
   <AppContainer>
-    <AppCard :cardWidth="450">
+    <AppCard :cardWidth="400">
       <EasingVisualizer :value="visualizerValue" />
       <div class="flex justify-evenly">
         <EasingPresetOptions :currentPreset="currentPreset" @updatePreset="setCurrentPreset" />

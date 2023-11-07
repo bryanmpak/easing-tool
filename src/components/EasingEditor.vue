@@ -60,32 +60,44 @@ export default defineComponent({
       }
     })
 
-    // curve & handle positions
-    const handleMouseMove = (e: MouseEvent) => {
+    const handleMove = (clientX: number, clientY: number) => {
       if (isDragging.value !== null && rect.value) {
-        const newValue = [...props.value]
-
-        let x = (e.clientX - rect.value.left - padding) / paddedWidth.value
-        let y = 1 - (e.clientY - rect.value.top - padding) / paddedHeight.value
-
-        // clamping x value to range [0, 1], per bezier-easing.ts spec
+        let x = (clientX - rect.value.left - padding) / paddedWidth.value
+        let y = 1 - (clientY - rect.value.top - padding) / paddedHeight.value
         x = Math.min(Math.max(x, 0), 1)
-
-        // based on index, which coordinate is being adjusted
+        const newValue = [...props.value]
         newValue[isDragging.value * 2] = x
         newValue[isDragging.value * 2 + 1] = y
-
         emit('updateValue', newValue)
       }
     }
 
-    const handleMouseDown = (index: number) => {
+    const handleMouseMove = (e: MouseEvent) => {
+      handleMove(e.clientX, e.clientY)
+    }
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const touch = e.touches[0]
+      handleMove(touch.clientX, touch.clientY)
+    }
+
+    const handleEnd = () => {
+      isDragging.value = null
+      emit('editing-finished', props.value)
+    }
+    const handleStart = (index: number) => {
       isDragging.value = index
     }
 
-    const handleMouseUp = () => {
-      isDragging.value = null
-      emit('editing-finished', props.value)
+    const handleMouseDown = (index: number) => {
+      handleStart(index)
+    }
+
+    const handleTouchStart = (event: TouchEvent, index: number) => {
+      if (event.touches.length === 1) {
+        handleStart(index)
+        event.preventDefault()
+      }
     }
 
     return {
@@ -93,7 +105,10 @@ export default defineComponent({
       position,
       handleMouseMove,
       handleMouseDown,
-      handleMouseUp,
+      handleMouseUp: handleEnd,
+      handleTouchMove,
+      handleTouchStart,
+      handleTouchEnd: handleEnd,
       padding
     }
   }
@@ -116,6 +131,9 @@ export default defineComponent({
       @mousemove="handleMouseMove"
       @mouseup="handleMouseUp"
       @mouseleave="handleMouseUp"
+      @touchmove="handleTouchMove"
+      @touchend="handleTouchEnd"
+      @touchcancel="handleTouchEnd"
     >
       <BezierCurve
         :value="value"
@@ -130,6 +148,7 @@ export default defineComponent({
         :initial-y="value[1]"
         :position="position"
         :handleMouseDown="handleMouseDown"
+        :handleTouchStart="handleTouchStart"
       />
       <CurveHandle
         :index="1"
@@ -137,6 +156,7 @@ export default defineComponent({
         :initial-y="value[3]"
         :position="position"
         :handleMouseDown="handleMouseDown"
+        :handleTouchStart="handleTouchStart"
       />
     </svg>
   </div>

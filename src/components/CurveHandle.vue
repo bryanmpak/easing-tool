@@ -27,6 +27,10 @@ export default defineComponent({
     handleMouseDown: {
       type: Function as PropType<(index: number) => void>,
       required: true
+    },
+    handleTouchStart: {
+      type: Function as PropType<(event: TouchEvent, index: number) => void>,
+      required: true
     }
   },
   setup(props) {
@@ -66,7 +70,8 @@ export default defineComponent({
       :cx="controlX"
       :cy="controlY"
       :r="radius"
-      @mousedown="() => handleMouseDown(index)"
+      @mousedown.prevent="() => handleMouseDown(index)"
+      @touchstart.prevent="(event) => handleTouchStart(event, index)"
       tabindex="0"
     />
   </g>
